@@ -1,0 +1,15 @@
+module.exports = {
+    slack: {
+        token: '',
+        name: '@*!#bot'
+    },
+    database: {
+        dsn: "./database.sqlite"
+    },
+    http: {
+        port: 3000,
+    },
+    words: [
+        'fuck', 'shit'
+    ]
+};
