@@ -3,21 +3,31 @@ const sqlite   = require('sqlite3').verbose();
 const config   = require('./config');
 
 // Setup
-const bot    = new SlackBot(config.slack);
-const db     = new sqlite.Database(config.database.dsn);
+try {
+    const bot = new SlackBot(config.slack);
+} catch (e) {
+    console.error('Unable to connect to Slack with the provided config!');
+}
 
-db.serialize(() => {
-    db.run(`
-        CREATE TABLE IF NOT EXISTS swears(
-            id INTEGER PRIMARY KEY ASC,
-            user TEXT NOT NULL,
-            message TEXT NOT NULL,
-            num INTEGER NOT NULL,
-            ts TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
-        )
-    `);
-    db.close();
-});
+try {
+    const db = new sqlite.Database(config.database.dsn);
+
+    db.serialize(() => {
+        db.run(`
+            CREATE TABLE IF NOT EXISTS swears(
+                id INTEGER PRIMARY KEY ASC,
+                user TEXT NOT NULL,
+                message TEXT NOT NULL,
+                num INTEGER NOT NULL,
+                ts TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
+            )
+        `);
+        db.close();
+    });
+} catch (e) {
+    console.error('Unable to connect to db with the provided config!');
+}
+
 
 const countSwears = (message) => {
     const re = new RegExp(config.words.join('|'), 'gi');
@@ -25,7 +35,7 @@ const countSwears = (message) => {
     return (message.match(re) || []).length;
 };
 
-const saveSwears = (event) => {
+const saveSwears = (event, numSwears) => {
     return new Promise(() => {
         // Add to the leaderboard
         const db = new sqlite.Database(config.database.dsn);
@@ -71,7 +81,7 @@ const checkForSwears = (event) => {
     }
 
     respondToSwears(event.channel);
-    saveSwears(event);
+    saveSwears(event, numSwears);
 };
 
 bot.on('message', checkForSwears);
