@@ -11,5 +11,11 @@ module.exports = {
     },
     words: [
         'fuck', 'shit'
-    ]
+    ],
+    bot: {
+        message: 'You swore! :scream: Adding this to your permanent record...',
+        config: {
+            icon_emoji: ':middle_finger:'
+        }
+    }
 };

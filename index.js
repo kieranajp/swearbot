@@ -61,10 +61,8 @@ const respondToSwears = (channel) => {
     // Tell them off
     return bot.postMessage(
         channel,
-        'You swore! :scream:',
-        {
-            icon_emoji: ':middle_finger:'
-        }
+        config.bot.message,
+        config.bot.config
     );
 };
 
