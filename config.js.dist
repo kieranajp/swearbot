@@ -1,6 +1,6 @@
 module.exports = {
     slack: {
-        token: '',
+        token: process.env.SLACK_TOKEN,
         name: '@*!#bot'
     },
     database: {
